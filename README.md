@@ -116,6 +116,32 @@ VITE_APP_ENV=development
 pnpm dev
 ```
 
+### Run with Docker
+
+Install and start [Docker Desktop](https://www.docker.com/products/docker-desktop/) before running the following commands.
+
+Build the frontend image from the project root. These Vite environment variables are embedded into the image during the build:
+
+```bash
+docker build \
+  --build-arg VITE_API_BASE_URL=http://localhost:8080/api/v1 \
+  --build-arg VITE_BASE_IMAGE_URL=http://localhost:8080/images \
+  --build-arg VITE_CURRENCY=MMK \
+  --build-arg VITE_BASE_URL=http://localhost:5173 \
+  --build-arg VITE_APP_ENV=development \
+  -t azue-perfume-house-web .
+```
+
+Run the container:
+
+```bash
+docker run --rm -p 5173:80 azue-perfume-house-web
+```
+
+Open the application at [http://localhost:5173](http://localhost:5173). Make sure the backend API is running at `http://localhost:8080`.
+
+> **Note:** Rebuild the Docker image whenever the Vite environment variables change.
+
 ## Environment Variables
 
 | Variable              | Description                              | Example                     |
