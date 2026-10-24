@@ -44,8 +44,13 @@ jobs:
           echo "Pushing ${IMAGE}"
           docker push "${IMAGE}"
 
-      - name: Redeploy on Railway
-        run: npx -y @railway/cli@latest redeploy --service "$RAILWAY_SERVICE_NAME" --yes
+      - name: Redeploy on Render
+        run: curl -fsS -X POST "$RENDER_DEPLOY_HOOK_URL"
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-          RAILWAY_SERVICE_NAME: ${{ secrets.RAILWAY_SERVICE_NAME }}
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+
+      # - name: Redeploy on Railway
+      #   run: npx -y @railway/cli@latest redeploy --service "$RAILWAY_SERVICE_NAME" --yes
+      #   env:
+      #     RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      #     RAILWAY_SERVICE_NAME: ${{ secrets.RAILWAY_SERVICE_NAME }}
