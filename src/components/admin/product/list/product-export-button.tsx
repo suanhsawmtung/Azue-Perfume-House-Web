@@ -1,5 +1,10 @@
 import { ExportButton } from "@/components/admin/shared/export-button";
-import { isConcentration, isGender, parseBoolean } from "@/lib/utils";
+import {
+  getCsvFilename,
+  isConcentration,
+  isGender,
+  parseBoolean,
+} from "@/lib/utils";
 import { exportAdminProducts } from "@/services/product/api";
 import { useSearchParams } from "react-router";
 import { toast } from "sonner";
@@ -16,7 +21,7 @@ export function ProductExportButton() {
     const isLimited = parseBoolean(searchParams.get("isLimited"));
 
     try {
-      const blob = await exportAdminProducts({
+      const exportParams = {
         ...(search && { search }),
         ...(brand && { brandSlug: brand }),
         ...(isGender(genderParam) && { gender: genderParam }),
@@ -25,11 +30,12 @@ export function ProductExportButton() {
         }),
         ...(typeof isActive === "boolean" && { isActive }),
         ...(typeof isLimited === "boolean" && { isLimited }),
-      });
+      };
+      const blob = await exportAdminProducts(exportParams);
       const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = objectUrl;
-      link.download = "products.csv";
+      link.download = getCsvFilename("products", exportParams);
       document.body.appendChild(link);
       link.click();
       link.remove();

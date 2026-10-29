@@ -1,4 +1,5 @@
 import { ExportButton } from "@/components/admin/shared/export-button";
+import { getCsvFilename } from "@/lib/utils";
 import { exportAdminInventories } from "@/services/inventory/api";
 import type { InventoryType } from "@/types/inventory.type.ts";
 import { useSearchParams } from "react-router";
@@ -15,13 +16,14 @@ export function InventoryExportButton({ type }: InventoryExportButtonProps) {
     const search = searchParams.get("search") || "";
 
     try {
-      const blob = await exportAdminInventories(type, {
+      const exportParams = {
         ...(search && { search }),
-      });
+      };
+      const blob = await exportAdminInventories(type, exportParams);
       const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = objectUrl;
-      link.download = "inventories.csv";
+      link.download = getCsvFilename("inventory", { type, ...exportParams });
       document.body.appendChild(link);
       link.click();
       link.remove();

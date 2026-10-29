@@ -1,5 +1,10 @@
 import { ExportButton } from "@/components/admin/shared/export-button";
-import { isOrderPaymentStatus, isOrderSource, isOrderStatus } from "@/lib/utils";
+import {
+  getCsvFilename,
+  isOrderPaymentStatus,
+  isOrderSource,
+  isOrderStatus,
+} from "@/lib/utils";
 import { exportAdminOrders } from "@/services/order/api";
 import { useSearchParams } from "react-router";
 import { toast } from "sonner";
@@ -15,7 +20,7 @@ export function OrderExportButton() {
     const condition = searchParams.get("condition") || undefined;
 
     try {
-      const blob = await exportAdminOrders({
+      const exportParams = {
         ...(search && { search }),
         ...(isOrderStatus(statusParam) && { status: statusParam }),
         ...(isOrderPaymentStatus(paymentStatusParam) && {
@@ -23,11 +28,12 @@ export function OrderExportButton() {
         }),
         ...(isOrderSource(sourceParam) && { source: sourceParam }),
         ...(condition && { condition }),
-      });
+      };
+      const blob = await exportAdminOrders(exportParams);
       const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = objectUrl;
-      link.download = "orders.csv";
+      link.download = getCsvFilename("orders", exportParams);
       document.body.appendChild(link);
       link.click();
       link.remove();

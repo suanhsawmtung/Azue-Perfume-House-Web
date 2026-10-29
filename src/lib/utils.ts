@@ -1,4 +1,5 @@
 import { baseImageUrl, currency } from "@/config/env";
+import { csvFilenameFilterOrder } from "@/constants/csv.constant";
 import type {
   OrderPaymentStatus,
   OrderSource,
@@ -524,6 +525,78 @@ export const scrollToSection = (id: string) => {
     behavior: "smooth",
     block: "start",
   });
+};
+
+export const getCurrentDateForCsvFileName = () => {
+  const currentDate = new Date();
+
+  return `${String(currentDate.getDate()).padStart(2, "0")}-${String(
+    currentDate.getMonth() + 1,
+  ).padStart(2, "0")}-${currentDate.getFullYear()}`;
+};
+
+const normalizeCsvFilenamePart = (value: string) =>
+  value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+export const getCsvFilename = (
+  moduleName: string,
+  filterValues: Record<string, unknown> = {},
+) => {
+  const filterEntries = Object.entries(filterValues)
+    .filter(([key, value]) => {
+      if (["page", "limit", "offset"].includes(key)) return false;
+      return value !== undefined && value !== null && value !== "";
+    })
+    .sort(([firstKey], [secondKey]) => {
+      const firstIndex = csvFilenameFilterOrder.indexOf(firstKey);
+      const secondIndex = csvFilenameFilterOrder.indexOf(secondKey);
+
+      if (firstIndex === -1 && secondIndex === -1) {
+        return firstKey.localeCompare(secondKey);
+      }
+      if (firstIndex === -1) return 1;
+      if (secondIndex === -1) return -1;
+      return firstIndex - secondIndex;
+    });
+
+  const filterParts = filterEntries.flatMap(([key, value]) => {
+    const values = Array.isArray(value) ? value : [value];
+
+    return values.flatMap((filterValue) => {
+      if (typeof filterValue === "object" || filterValue === null) {
+        return [];
+      }
+
+      let valueText = String(filterValue);
+      if (key === "gender") {
+        valueText =
+          filterValue === "MALE"
+            ? "men"
+            : filterValue === "FEMALE"
+              ? "women"
+              : valueText;
+      }
+      if (typeof filterValue === "boolean") {
+        if (key === "isActive") valueText = filterValue ? "active" : "inactive";
+        if (key === "isLimited")
+          valueText = filterValue ? "limited" : "not-limited";
+      }
+
+      const normalizedValue = normalizeCsvFilenamePart(valueText);
+      return normalizedValue ? [normalizedValue] : [];
+    });
+  });
+
+  const normalizedModuleName = normalizeCsvFilenamePart(moduleName);
+  return (
+    [getCurrentDateForCsvFileName(), ...filterParts, normalizedModuleName]
+      .filter(Boolean)
+      .join("-") + ".csv"
+  );
 };
 
 export const sleep = (ms: number) =>
