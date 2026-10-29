@@ -1,5 +1,6 @@
 import { OrderFilterDialog } from "@/components/admin/order/list/order-filter-dialog";
 import { OrderList } from "@/components/admin/order/list/order-list";
+import { OrderExportButton } from "@/components/admin/order/list/order-export-button";
 import AdminHeaderSection from "@/components/admin/shared/admin-header-section";
 import { CreateButton } from "@/components/admin/shared/create-button";
 import { FilterBar } from "@/components/admin/shared/filter-bar";
@@ -42,6 +43,7 @@ const AdminOrdersPage = () => {
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
           <div className="flex items-center gap-x-2">
             <CreateButton text="Create Order" to="/admin/orders/create" />
+            <OrderExportButton />
 
             <div className="block sm:hidden">
               <OrderFilterDialog>

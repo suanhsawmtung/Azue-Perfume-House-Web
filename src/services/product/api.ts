@@ -103,6 +103,20 @@ export async function fetchAdminProducts(options: {
   };
 }
 
+export async function exportAdminProducts(
+  params: Pick<
+    ProductQueryParams,
+    "search" | "brandSlug" | "gender" | "concentration" | "isActive" | "isLimited"
+  >,
+): Promise<Blob> {
+  const response = await api.get<Blob>("/admin/products/export", {
+    params,
+    responseType: "blob",
+  });
+
+  return response.data;
+}
+
 export async function fetchAdminProduct(slug: string): Promise<AdminProductDetailType> {
   const response = await api.get(`/admin/products/${slug}`);
 
