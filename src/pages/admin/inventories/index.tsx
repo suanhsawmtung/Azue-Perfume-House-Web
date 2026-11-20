@@ -1,4 +1,5 @@
 import { InventoriesList } from "@/components/admin/inventory/list/inventories-list";
+import { InventoryExportButton } from "@/components/admin/inventory/list/inventory-export-button";
 import AdminHeaderSection from "@/components/admin/shared/admin-header-section";
 import { CreateButton } from "@/components/admin/shared/create-button";
 import { FilterBar } from "@/components/admin/shared/filter-bar";
@@ -28,10 +29,13 @@ export default function AdminInventoriesPage() {
 
       <div className="space-y-5">
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-          <CreateButton
-            text="Create Inventory"
-            to="/admin/inventories/create"
-          />
+          <div className="flex items-center gap-x-2">
+            <CreateButton
+              text="Create Inventory"
+              to="/admin/inventories/create"
+            />
+            <InventoryExportButton type={activeTab} />
+          </div>
 
           <FilterBar />
         </div>

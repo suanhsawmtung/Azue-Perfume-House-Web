@@ -61,6 +61,20 @@ export async function fetchAdminOrders(
   };
 }
 
+export async function exportAdminOrders(
+  params: Pick<
+    OrderQueryParams,
+    "search" | "status" | "paymentStatus" | "source" | "condition"
+  >,
+): Promise<Blob> {
+  const response = await api.get<Blob>("/admin/orders/export", {
+    params,
+    responseType: "blob",
+  });
+
+  return response.data;
+}
+
 export async function fetchAdminOrder(code: string): Promise<OrderDetailType> {
   const response = await api.get(`/admin/orders/${code}`);
   return response.data?.data;

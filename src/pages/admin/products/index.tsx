@@ -1,5 +1,6 @@
 import { ProductFilterDialog } from "@/components/admin/product/list/product-filter-dialog";
 import { ProductList } from "@/components/admin/product/list/products-list";
+import { ProductExportButton } from "@/components/admin/product/list/product-export-button";
 import AdminHeaderSection from "@/components/admin/shared/admin-header-section";
 import { CreateButton } from "@/components/admin/shared/create-button";
 import { FilterBar } from "@/components/admin/shared/filter-bar";
@@ -52,6 +53,7 @@ const AdminProductsPage = () => {
         <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
           <div className="flex items-center gap-x-2">
             <CreateButton text="Create Product" to="/admin/products/create" />
+            <ProductExportButton />
 
             <div className="block sm:hidden">
               <ProductFilterDialog>
